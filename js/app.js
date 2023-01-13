@@ -102,6 +102,23 @@ function nuevaCita(e) {
   //agregando id al objeto
   citaObj.id = Date.now();
 
-  administrarCitas.agregarCita(citaObj);
+  // debido a que el objeto es global siempre toma el mismo valor y asi se manda una copia de cada uno
+  administrarCitas.agregarCita({...citaObj});
+
+  //resetear el formulario
+
+  reiniciarObjeto();
+  
+  formulario.reset();
+
+}
+
+function reiniciarObjeto(){
+  citaObj.mascota = '';
+  citaObj.propietario = '';
+  citaObj.telefono = '';
+  citaObj.fecha = '';
+  citaObj.hora = '';
+  citaObj.sintomas = '';
 
 }
