@@ -1,5 +1,5 @@
 //variables
-
+//campos del formulario
 const mascotaInput = document.querySelector('#mascota');
 const propietarioInput = document.querySelector('#propietario');
 const telefonoInput = document.querySelector('#telefono');
@@ -7,8 +7,8 @@ const fechaInput = document.querySelector('#fecha');
 const horaInput = document.querySelector('#hora');
 const sintomasInput = document.querySelector('#sintomas');
 
+//UI
 const formulario = document.querySelector('#nueva-cita');
-
 const contenedorCitas = document.querySelector('citas');
 
 //obejto con valores de la cita
@@ -22,6 +22,50 @@ citaObj = {
   sintomas: ''
 }
 
+// CLASES
+
+class Citas{
+  constructor(){
+    this.citas = [];
+  }
+
+  agregarCita(cita){
+    this.citas = [...this.citas, cita];
+    console.log(this.citas);
+  }
+}
+
+class UI{
+  imprimirAlerta(mensaje, tipo){
+    //crear div
+    const divMensaje = document.createElement('div');
+    divMensaje.classList.add('text-center', 'alert', 'd-block', 'col-12');
+
+    //validacion de si es tipo error o normal
+
+    if(tipo === 'error'){
+      divMensaje.classList.add('alert-danger');
+    }else{
+      divMensaje.classList.add('alert-success');
+    }
+
+    divMensaje.textContent = mensaje;
+
+    //insertarlo en el html
+
+    document.querySelector('#contenido').insertBefore(divMensaje, document.querySelector('.agregar-cita'))
+
+    //eliminar el div
+
+    setTimeout(() => {
+      divMensaje.remove();
+    }, 3000);
+  }
+}
+
+const administrarCitas = new Citas();
+const ui = new UI();
+
 //eventos
 
 eventListeners();
@@ -33,12 +77,31 @@ function eventListeners() {
   fechaInput.addEventListener('input', datosCita);
   horaInput.addEventListener('input', datosCita);
   sintomasInput.addEventListener('input', datosCita);
+
+  formulario.addEventListener('submit', nuevaCita);
 }
+
 
 
 //funciones
 
 function datosCita(e) {
   citaObj[e.target.name] = e.target.value;
-  console.log(citaObj);
+}
+
+function nuevaCita(e) {
+  e.preventDefault();
+  const { mascota, propietario, telefono, fecha, hora, sintomas } = citaObj;
+  //validacion de si falta uno
+  if(mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintomas === '') {
+    ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
+
+    return;
+  }
+
+  //agregando id al objeto
+  citaObj.id = Date.now();
+
+  administrarCitas.agregarCita(citaObj);
+
 }
